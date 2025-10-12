@@ -1,0 +1,24 @@
+<html lang="en">
+<head>
+<title>Getting to Know Vue.js</title>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <p> {{ message }}</p>
+
+    </div>
+
+    <script>
+        var app = new Vue ({
+            el: '#app',
+            data: {
+                message: 'Welcome to the Module CST3144',
+            }
+        })
+
+        //app.message ="I have changed the data"
+    </script>
+</body>
+</html>
