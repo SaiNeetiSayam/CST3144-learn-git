@@ -44,6 +44,11 @@
                         <button disabled='disabled' v-else>
                             Add to cart
                         </button>
+                        <span v-if="product.availableInventory - cartItemCount === 5">All out!</span>
+                        <span v-else-if="product.availableInventory - cartItemCount < 5">
+                            Only {{product.availableInventory - cartItemCount}} left!
+                        </span>
+                        <span v-else>Buy now!</span>
                     </div>
                 </div>
                 <div v-else>
@@ -60,9 +65,48 @@
                         <!-- This input field is bound to 'lastName' in the 'order' object -->
                          <input v-model="order.lastName"/>
                     </p>
+                    <p>
+                        <strong>Address:</strong> <input v-model="order.address"/>
+                    </p>
+                    <p>
+                        <strong>City:</strong> <input v-model="order.city"/>
+                    </p>
+                    <p>
+                        <strong>State:</strong>
+                        <select v-model="order.state" class="form-control">
+                            <option disabled value="">State</option>
+                            <option v-bind:value="states.AL">AL</option>
+                            <option v-bind:value="states.AR">AR</option>
+                            <option v-bind:value="states.CA">CA</option>
+                            <option v-bind:value="states.NV">NV</option>
+                        </select>
+                    </p>
+                    <p>
+                        <strong>Zip/Postal Code:</strong> <input v-model="order.zip"/>
+                    </p>
+                    <p>
+                        <input type="checkbox" id="gift" value="true" v-model="order.gift"
+                        v-bind:true-value="order.sendGift"
+                        v-bind:false-value="order.dontSendGift">
+                        
+                        <label for="gift">Ship As Gift?</label>
+                    </p>
+                    <p>
+                        <input type="radio" id="home" value="Home" v-model="order.method">
+                        <label for="home">Home</label>
+                        <input type="radio" id="business" value="Business" v-model="order.method">
+                        <label for="business">Business</label>
+                    </p>
                     <h2>Order Information</h2>
                     <p>First Name: {{order.firstName}}</p>
                     <p>Last Name: {{order.lastName}}</p>
+                    <p>Adress: {{order.address}}</p>
+                    <p>City: {{order.city}}</p>
+                    <p>State: {{order.state}}</p>
+                    <p>Zip: {{order.zip}}</p>
+                    <p>Gift? {{order.gift}}</p>
+                    <p>Method: {{order.method}}</p>
+                    <button v-on:click="submitForm">Place Order</button>
                 </div>
             </main>
         </div>
@@ -72,10 +116,24 @@
                 data: { //the 'data' option
                     //the key 'sitename' matches the value of 'v-text' earlier
                     sitename: 'Vue.js Pet Depot',
+                    states: {
+                        AL: 'Alabama',
+                        AR: 'Arizona',
+                        CA: 'California',
+                        NV: 'Nevada'
+                    },
                     showProduct: true,
                     order: {
                         firstName: '',
-                        lastName: ''
+                        lastName: '',
+                        address: '',
+                        city: '',
+                        zip: '',
+                        state: '',
+                        method: 'Home',
+                        gift: false,
+                        sendGift: 'Send as a gift',
+                        dontSendGift: 'Do not send as a gift'
                     },
                     product: {
                         id: 1001,
@@ -83,7 +141,8 @@
                         description: "A 25 pound bag of <em>irresistable</em>, "+"organic goodness for your cat.",
                         price: 2000,
                         image: "assets/images/product-fullsize.png",
-                        availableInventory: 5
+                        availableInventory: 5,
+                        rating: 3
                     },
                     cart: [] // array to store items in shopping cart
                 },
@@ -93,7 +152,8 @@
                     },
                     showCheckout() {
                         this.showProduct = this.showProduct ? false : true; 
-                    }
+                    },
+                    submitForm() {alert('Order submitted!')}
                 },
                 computed: { //the Computed Property object
                     cartItemCount: function() {//the property name
