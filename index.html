@@ -23,33 +23,31 @@
                     </button>
                 </div>
                 <div v-if='showProduct'>
-                    <!-- the code for the product page -->
-                    <div style="display:inline-block;">
-                        <figure>
-                            <!-- bind 'src' attr to 'product.image' in 'data' -->
-                            <img v-bind:src="product.image">
-                        </figure>
-                    </div>
-                    <div style="display:inline-block;">
-                        <h2 v-text="product.title"></h2>
-                        <p v-html="product.description"></p>
+                    <div v-for="product in sortedProducts">
+                        <!-- the code for the product page -->
+                        <div style="display:inline-block;">
+                            <figure>
+                                <!-- bind 'src' attr to 'product.image' in 'data' -->
+                                <img v-bind:src="product.image">
+                            </figure>
+                        </div>
+                        <div style="display:inline-block;">
+                            <h2 v-text="product.title"></h2>
+                            <p v-html="product.description"></p>
 
-                        <!-- The double curly brackets is used instead of 'v-text' -->
-                        <p>Price: {{product.price}}</p>
-                        <!--This button will be displayed when 'canAddToCart' is True -->
-                        <button v-on:click="addToCart" v-if="canAddToCart">
-                            Add to cart
-                        </button>
-                        <!-- This button will be displayed otherwise -->
-                        <button disabled='disabled' v-else>
-                            Add to cart
-                        </button>
-                        <span v-if='itemsLeft === 0'>All out!</span>
-                        <span v-else-if="itemsLeft < 5">Only {{itemsLeft}} left!</span>
-                        <span v-else>Buy now!</span>
-                        <br>
-                        <span v-for='n in product.rating'>★</span>
-                        <span v-for='n in 5 - product.rating'>☆</span>
+                            <!-- The double curly brackets is used instead of 'v-text' -->
+                            <p>Price: {{product.price}}</p>
+                            <button v-on:click='addToCart(product)' v-if='canAddToCart(product)'> Add to cart</button>
+                            
+                            <span v-if='product.availableInventory === cartCount(product.id)'>All out!</span>
+                            <span v-else-if="product.availableInventory - cartCount(product.id) < 5">
+                                Only {{product.availableInventory - cartCount(product.id)}} left!
+                            </span>
+                            <span v-else>Buy now!</span>
+                            <br>
+                            <span v-for='n in product.rating'>★</span>
+                            <span v-for='n in 5 - product.rating'>☆</span>
+                        </div>
                     </div>
                 </div>
                 <div v-else>
@@ -111,6 +109,7 @@
                 </div>
             </main>
         </div>
+        <script src="products.js"></script>
         <script type="text/javascript">
             var webstore = new Vue({
                 el:'#app',//<===Don't forget this comma
@@ -136,20 +135,26 @@
                         sendGift: 'Send as a gift',
                         dontSendGift: 'Do not send as a gift'
                     },
-                    product: {
-                        id: 1001,
-                        title: "Cat Food, 25lb bag",
-                        description: "A 25 pound bag of <em>irresistable</em>, "+"organic goodness for your cat.",
-                        price: 2000,
-                        image: "assets/images/product-fullsize.png",
-                        availableInventory: 10,
-                        rating: 3
-                    },
+                    //The first 'prodcuts' is a Vue property
+                    //The second products is the array from 'products.js'
+                    products: products,
                     cart: [] // array to store items in shopping cart
                 },
                 methods: {
-                    addToCart: function() {
-                        this.cart.push(this.product.id);
+                    addToCart(product) {
+                        this.cart.push(product.id);
+                    },
+                    canAddToCart(product) {
+                        return product.availableInventory > this.cartCount(product.id);
+                    },
+                    cartCount(id) {
+                        let count = 0;
+                        for(let i = 0; i < this.cart.length; i++) {
+                            if (this.cart[i] === id) {
+                                count++;
+                            }
+                        }
+                        return count;
                     },
                     showCheckout() {
                         this.showProduct = this.showProduct ? false : true; 
@@ -161,11 +166,19 @@
                         //its value is calculated when it's called
                         return this.cart.length || "";
                     },
-                    canAddToCart: function() {
-                        return this.product.availableInventory > this.cartItemCount;
-                    },
                     itemsLeft() {
                         return this.product.availableInventory - this.cartItemCount;
+                    },
+                    sortedProducts() {
+                        //the comparison function that defines the order
+                        function compare(a, b) {
+                            if (a.price > b.price) return 1;
+                            if (a.price < b.price) return -1;
+                            return 0;
+                        }
+                        
+                        // sort the 'products' array and return it
+                        return this.products.sort(compare);
                     }
                 }
             });
