@@ -1,10 +1,25 @@
 var http = require("http");
+const chalk = require("chalk");
 
 const {getCurrentTime, getServerStatus} = require("./helper");
+var randomInt = require("./random-integer");
+
+const randomNum = randomInt();
+
+if (randomNum >= 1 && randomNum <= 33) {
+    console.log(chalk.green(`Random Number: ${randomNum}`));
+}
+else if (randomNum >= 34 && randomNum <= 66) {
+    console.log(chalk.yellow(`Random Number: ${randomNum}`));
+}
+else {
+    console.log(chalk.red(`Random Number: ${randomNum}`));
+}
 
 const result = {
     currentTime: getCurrentTime(),
     serverStatus: getServerStatus(),
+    randomNum: randomNum
 };
 
 const server = http.createServer((req, res) => {
