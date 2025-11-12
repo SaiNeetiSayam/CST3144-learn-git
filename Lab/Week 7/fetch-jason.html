@@ -1,0 +1,31 @@
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+</head>
+    <body>
+        <div id='store'>{{product}}</div>
+        <script>
+            let store = new Vue({
+                el: '#store',
+                data: {
+                    product: [],
+                },
+                created: function () {
+                    console.log('requesting data from server ...')
+
+                    fetch('http://localhost:3000').then(
+                        function (response) {
+                            response.json().then:(
+                                function (json) {
+                                    // save the returned JSON object to
+                                    // 'product' data property
+                                    store.product = json;
+                                    console.log(json);
+                                });
+                        }
+                    )
+                }
+            })
+        </script>
+    </body>
+</html>
