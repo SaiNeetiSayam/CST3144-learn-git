@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>After School Class App</title>
+        <title>After School App</title>
         <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     </head>
@@ -22,26 +22,26 @@
                         Checkout
                     </button>
                 </div>
-                <div v-if='showSubject'>
-                    <div v-for="subject in sortedSubjects">
-                        <!-- the code for the subject page -->
+                <div v-if='showLesson'>
+                    <div v-for="lesson in sortedLessons">
+                        <!-- the code for the lesson page -->
                         <div style="display:inline-block;">
                             <figure>
-                                <!-- bind 'src' attr to 'subject.image' in 'data' -->
-                                <img v-bind:src="subject.image">
+                                <!-- bind 'src' attr to 'lesson.image' in 'data' -->
+                                <img v-bind:src="lesson.image">
                             </figure>
                         </div>
                         <div style="display:inline-block;">
-                            <h2 v-text="subject.title"></h2>
-                            <p v-html="subject.location"></p>
+                            <h2 v-text="lesson.title"></h2>
+                            <p v-html="lesson.location"></p>
 
                             <!-- The double curly brackets is used instead of 'v-text' -->
-                            <p>Price: {{subject.price}}</p>
-                            <button v-on:click='addToCart(subject)' v-if='canAddToCart(subject)'> Add to cart</button>
+                            <p>Price: {{lesson.price}}</p>
+                            <button v-on:click='addToCart(lesson)' v-if='canAddToCart(lesson)'> Add to cart</button>
                             
-                            <span v-if='subject.availableSpaces === cartCount(subject.id)'>No spaces!</span>
-                            <span v-else-if="subject.availableSpaces - cartCount(subject.id) < 5">
-                                Only {{subject.availableSpaces - cartCount(subject.id)}} spaces left!
+                            <span v-if='lesson.availableSpaces === cartCount(lesson.id)'>No spaces!</span>
+                            <span v-else-if="lesson.availableSpaces - cartCount(lesson.id) < 5">
+                                Only {{lesson.availableSpaces - cartCount(lesson.id)}} spaces left!
                             </span>
                             <span v-else>Enrol now!</span>
                             <br>
@@ -107,20 +107,20 @@
                 </div>
             </main>
         </div>
-        <script src="subjects.js"></script>
+        <script src="lessons.js"></script>
         <script type="text/javascript">
             var webstore = new Vue({
                 el:'#app',//<===Don't forget this comma
                 data: { //the 'data' option
                     //the key 'sitename' matches the value of 'v-text' earlier
-                    sitename: 'After School Class App',
+                    sitename: 'After School App',
                     states: {
                         EN: 'England',
                         WA: 'Wales',
                         SC: 'Scotland',
                         NI: 'Northern Ireland'
                     },
-                    showSubject: true,
+                    showLesson: true,
                     order: {
                         firstName: '',
                         lastName: '',
@@ -134,16 +134,16 @@
                         enrolWithoutScholarship: 'Enrol without scholarship'
                     },
                     //The first 'prodcuts' is a Vue property
-                    //The second subjects is the array from 'subjects.js'
-                    subjects: subjects,
+                    //The second lessons is the array from 'lessons.js'
+                    lessons: lessons,
                     cart: [] // array to store items in shopping cart
                 },
                 methods: {
-                    addToCart(subject) {
-                        this.cart.push(subject.id);
+                    addToCart(lesson) {
+                        this.cart.push(lesson.id);
                     },
-                    canAddToCart(subject) {
-                        return subject.availableSpaces > this.cartCount(subject.id);
+                    canAddToCart(lesson) {
+                        return lesson.availableSpaces > this.cartCount(lesson.id);
                     },
                     cartCount(id) {
                         let count = 0;
@@ -155,7 +155,7 @@
                         return count;
                     },
                     showCheckout() {
-                        this.showSubject = this.showSubject ? false : true; 
+                        this.showLesson = this.showLesson ? false : true; 
                     },
                     submitForm() {alert('Order submitted!')}
                 },
@@ -165,9 +165,9 @@
                         return this.cart.length || "";
                     },
                     itemsLeft() {
-                        return this.subject.availableSpaces - this.cartItemCount;
+                        return this.lesson.availableSpaces - this.cartItemCount;
                     },
-                    sortedSubjects() {
+                    sortedLessons() {
                         //the comparison function that defines the order
                         function compare(a, b) {
                             if (a.price > b.price) return 1;
@@ -175,8 +175,8 @@
                             return 0;
                         }
                         
-                        // sort the 'subjects' array and return it
-                        return this.subjects.sort(compare);
+                        // sort the 'lessons' array and return it
+                        return this.lessons.sort(compare);
                     }
                 }
             });

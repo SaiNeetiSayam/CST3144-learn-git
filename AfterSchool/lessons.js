@@ -1,4 +1,4 @@
-             let subjects = [
+             let lessons = [
                         {
                             id: 1001,
                             title: "Math",

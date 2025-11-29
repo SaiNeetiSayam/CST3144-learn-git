@@ -13,9 +13,9 @@
                 created: function () {
                     console.log('requesting data from server ...')
 
-                    fetch('http://localhost:3000').then(
+                    fetch('http://localhost:3000').then (
                         function (response) {
-                            response.json().then:(
+                            response.json().then (
                                 function (json) {
                                     // save the returned JSON object to
                                     // 'product' data property
