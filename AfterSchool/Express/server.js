@@ -1,3 +1,4 @@
+//REST APIs for managing AfterSchool Database in MongoDB Atlas
 // Import dependencies modules
 const express = require('express');
 
